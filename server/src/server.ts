@@ -1,11 +1,14 @@
-import express from "express"
+import express, { Express, Request, Response } from "express"
 import cors from "cors"
 
-// const cors = require("cors");
-
-export const server = express();
+export const server: Express = express();
+server.use(express.json())
 server.use(cors());
 
-server.get("/", (req, res) => res.send("Hello World!"));
+import { router as todoRoutes } from "./routes/todos"
+
+server.use("/todo", todoRoutes)
+
+server.get("/", (req: Request, res: Response) => res.send("Hello World!"));
 
 
