@@ -23,8 +23,6 @@ router.get('/get', (req: Request, res: Response) => {
 // POST
 router.post('/post', (req: Request, res:Response) => {
     try {
-        // tslint:disable-next-line:no-console
-        console.log(req.body)
         const { task, isCompleted } = req.body
         const time = Date.now()
         const todo: Todo = {
@@ -33,7 +31,7 @@ router.post('/post', (req: Request, res:Response) => {
             isCompleted
         }
         todos.push(todo)
-        res.status(201).json({...todo, message: "Todo has been created!"})
+        res.status(201).json({ message: "Todo has been created!", ...todo })
     } catch (err) {
         res.status(404).json({error: err.message})
     }
@@ -49,7 +47,7 @@ router.put('/update/:id', (req: Request, res: Response) => {
             ...todos[todoIndex],
             ...req.body
         }
-        res.status(200).json({...todos[todoIndex], message: "Todo has been updated!"})
+        res.status(200).json({ message: "Todo has been updated!", ...todos[todoIndex] })
     } catch (err) {
         res.status(404).json({error: err.message})
     }
@@ -63,7 +61,7 @@ router.delete("/delete/:id", (req: Request, res: Response) => {
         if (todoIndex === -1) { throw new Error("Id not found") }
         const removed = todos[todoIndex]
         todos.splice(todoIndex, 1)
-        res.status(200).json({...removed, message: "Todo has been deleted!"})
+        res.status(200).json({ message: "Todo has been deleted!", ...removed })
     } catch (err) {
         res.status(404).json({error: err.message})
     }
