@@ -17,8 +17,6 @@ exports.router.get('/get', (req, res) => {
 // POST
 exports.router.post('/post', (req, res) => {
     try {
-        // tslint:disable-next-line:no-console
-        console.log(req.body);
         const { task, isCompleted } = req.body;
         const time = Date.now();
         const todo = {
@@ -27,10 +25,10 @@ exports.router.post('/post', (req, res) => {
             isCompleted
         };
         todos.push(todo);
-        res.status(201).json(Object.assign(Object.assign({}, todo), { message: "Todo has been created!" }));
+        res.status(201).json(Object.assign({ message: "Todo has been created!" }, todo));
     }
     catch (err) {
-        res.status(404).json({ error: err.message });
+        res.status(400).json({ error: err.message });
     }
 });
 // UPDATE
@@ -42,7 +40,7 @@ exports.router.put('/update/:id', (req, res) => {
             throw new Error("Id not found");
         }
         todos[todoIndex] = Object.assign(Object.assign({}, todos[todoIndex]), req.body);
-        res.status(200).json(Object.assign(Object.assign({}, todos[todoIndex]), { message: "Todo has been updated!" }));
+        res.status(200).json(Object.assign({ message: "Todo has been updated!" }, todos[todoIndex]));
     }
     catch (err) {
         res.status(404).json({ error: err.message });
@@ -58,7 +56,7 @@ exports.router.delete("/delete/:id", (req, res) => {
         }
         const removed = todos[todoIndex];
         todos.splice(todoIndex, 1);
-        res.status(200).json(Object.assign(Object.assign({}, removed), { message: "Todo has been deleted!" }));
+        res.status(200).json(Object.assign({ message: "Todo has been deleted!" }, removed));
     }
     catch (err) {
         res.status(404).json({ error: err.message });

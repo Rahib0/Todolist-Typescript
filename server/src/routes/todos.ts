@@ -33,7 +33,7 @@ router.post('/post', (req: Request, res:Response) => {
         todos.push(todo)
         res.status(201).json({ message: "Todo has been created!", ...todo })
     } catch (err) {
-        res.status(404).json({error: err.message})
+        res.status(400).json({error: err.message})
     }
 })
 
