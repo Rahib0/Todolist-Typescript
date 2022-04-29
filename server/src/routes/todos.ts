@@ -1,12 +1,13 @@
 import express, { Router, Request, Response } from "express"
+import Todo from '../models/Todo'
 export const router: Router = express.Router()
 
-const todos: Todo[] = []
+const todos: TodoInterface[] = []
 
 interface Payload {
-    data: Todo[]
+    data: TodoInterface[]
 }
-interface Todo {
+interface TodoInterface {
     id: number,
     task: string,
     isCompleted: boolean
@@ -20,12 +21,22 @@ router.get('/get', (req: Request, res: Response) => {
     res.status(200).json(payload)
 })
 
+// GET from db
+router.get('/getall', async (req: Request, res: Response) => {
+    try {
+		const show = await Todo.everything;
+		res.status(200).json(show);
+	} catch (err) {
+		res.status(404).json({error: err.message});
+	}
+})
+
 // POST
 router.post('/post', (req: Request, res:Response) => {
     try {
         const { task, isCompleted } = req.body
         const time = Date.now()
-        const todo: Todo = {
+        const todo: TodoInterface = {
             id: time,
             task,
             isCompleted
