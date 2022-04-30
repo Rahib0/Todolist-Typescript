@@ -22,7 +22,7 @@ router.get('/get', (req: Request, res: Response) => {
 })
 
 // GET from db
-router.get('/getall', async (req: Request, res: Response) => {
+router.get('/db/get', async (req: Request, res: Response) => {
     try {
 		const show = await Todo.everything;
 		res.status(200).json(show);
@@ -48,6 +48,16 @@ router.post('/post', (req: Request, res:Response) => {
     }
 })
 
+// POST to db
+router.post('/db/post', async(req: Request, res:Response) => {
+    try {
+        const show = await Todo.create(req.body);
+		res.status(200).json(show);
+	} catch (err) {
+        res.status(404).json({error: err});
+	}
+})
+
 // UPDATE
 router.put('/update/:id', (req: Request, res: Response) => {
     try {
@@ -63,6 +73,15 @@ router.put('/update/:id', (req: Request, res: Response) => {
         res.status(404).json({error: err.message})
     }
 } )
+
+// UPDATE to db
+router.put('/db/update/:id', (req: Request, res: Response) => {
+    try {
+        const todoId: number = Number(req.params.id)
+    } catch (err) {
+
+    }
+})
 
 // DELETE
 router.delete("/delete/:id", (req: Request, res: Response) => {

@@ -25,7 +25,7 @@ exports.router.get('/get', (req, res) => {
     res.status(200).json(payload);
 });
 // GET from db
-exports.router.get('/getall', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.router.get('/db/get', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const show = yield Todo_1.default.everything;
         res.status(200).json(show);
@@ -51,6 +51,16 @@ exports.router.post('/post', (req, res) => {
         res.status(400).json({ error: err.message });
     }
 });
+// POST to db
+exports.router.post('/db/post', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const show = yield Todo_1.default.create(req.body);
+        res.status(200).json(show);
+    }
+    catch (err) {
+        res.status(404).json({ error: err });
+    }
+}));
 // UPDATE
 exports.router.put('/update/:id', (req, res) => {
     try {
@@ -64,6 +74,14 @@ exports.router.put('/update/:id', (req, res) => {
     }
     catch (err) {
         res.status(404).json({ error: err.message });
+    }
+});
+// UPDATE to db
+exports.router.put('/db/update/:id', (req, res) => {
+    try {
+        const todoId = Number(req.params.id);
+    }
+    catch (err) {
     }
 });
 // DELETE
