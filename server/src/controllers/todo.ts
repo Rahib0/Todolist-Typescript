@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express"
+import { Request, Response } from "express"
 import Todo from '../models/Todo'
 
 interface Payload {
