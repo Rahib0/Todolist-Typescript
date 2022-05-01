@@ -1,18 +1,8 @@
 import { Request, Response } from "express"
-import Todo from '../models/Todo'
+import Todo, { TodoInterface, TodoPayloadUpdate } from '../models/Todo'
 
 interface Payload {
     data: TodoInterface[] | TodoInterface
-}
-interface TodoInterface {
-    id: number,
-    task: string,
-    isCompleted: boolean
-}
-
-interface TodoPayloadUpdate {
-    task?: string,
-    isCompleted?: boolean
 }
 
 export async function displayAllTodos(req: Request, res: Response) {

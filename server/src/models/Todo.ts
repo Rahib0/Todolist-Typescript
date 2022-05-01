@@ -1,6 +1,6 @@
 import db from '../db_config/config'
 
-interface TodoInterface {
+export interface TodoInterface {
     readonly id: number,
     task: string,
     isCompleted: boolean,
@@ -13,7 +13,7 @@ interface TodoPayload {
     isCompleted: boolean
 }
 
-interface TodoPayloadUpdate {
+export interface TodoPayloadUpdate {
     task?: string,
     isCompleted?: boolean
 }
