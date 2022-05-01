@@ -77,13 +77,18 @@ exports.router.put('/update/:id', (req, res) => {
     }
 });
 // UPDATE to db
-exports.router.put('/db/update/:id', (req, res) => {
+exports.router.put('/db/update/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const todoId = Number(req.params.id);
+        const todo = yield Todo_1.default.find(todoId);
+        const newTodoData = req.body;
+        const show = yield todo.update(newTodoData);
+        res.status(200).json(show);
     }
     catch (err) {
+        res.status(404).json({ error: err });
     }
-});
+}));
 // DELETE
 exports.router.delete("/delete/:id", (req, res) => {
     try {
@@ -100,4 +105,16 @@ exports.router.delete("/delete/:id", (req, res) => {
         res.status(404).json({ error: err.message });
     }
 });
+// DELETE from db
+exports.router.delete("/db/delete/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const todoId = Number(req.params.id);
+        const todo = yield Todo_1.default.find(todoId);
+        const show = yield todo.destroy;
+        res.status(200).json(Object.assign({ message: "Todo has been deleted!" }, show));
+    }
+    catch (err) {
+        res.status(404).json({ error: err });
+    }
+}));
 //# sourceMappingURL=todos.js.map

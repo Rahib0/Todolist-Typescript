@@ -31,7 +31,7 @@ class Todo {
             catch (err) {
                 // tslint:disable-next-line:no-console
                 console.log("query has been rejected");
-                reject(`Error retrieving habits data: ${err}`);
+                reject(`Error retrieving Todos data: ${err}`);
             }
         }));
     }
@@ -43,40 +43,62 @@ class Todo {
                 const { task, isCompleted } = todoData;
                 const newTodo = yield config_1.default.query("INSERT INTO todos (task, iscompleted) VALUES ($1, $2) RETURNING *;", [task, isCompleted]);
                 const result = new Todo(newTodo.rows[0]);
+                resolve({ data: result });
+            }
+            catch (err) {
+                // tslint:disable-next-line:no-console
+                console.log("query has been rejected");
+                reject(`Todo could not be created`);
+            }
+        }));
+    }
+    static find(id) {
+        return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+            // tslint:disable-next-line:no-console
+            console.log("Attempting to query database to find Todo...");
+            try {
+                const todo = yield config_1.default.query("SELECT * FROM todos WHERE todo_id = $1;", [id]);
+                const result = new Todo(todo.rows[0]);
                 resolve(result);
             }
             catch (err) {
                 // tslint:disable-next-line:no-console
                 console.log("query has been rejected");
-                reject(`Habit could not be created`);
+                reject(`No such id found`);
             }
         }));
     }
-    // WORK ON THIS 
-    // static find(id){
-    //     return new Promise(async(resolve, reject) => {
-    //                 // tslint:disable-next-line:no-console
-    //                 console.log("Attempting to query database to update Todo...")
-    //     })
-    // }
     update(todoData) {
         return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
             // tslint:disable-next-line:no-console
             console.log("Attempting to query database to update Todo...");
             try {
-                // const { task, isCompleted } = todoData;
                 const task = todoData.task || this.task;
-                const isCompleted = todoData.isCompleted || this.isCompleted;
-                // tslint:disable-next-line:no-console
-                console.log(task, isCompleted);
-                const newTodo = yield config_1.default.query("UPDATE todos (task, iscompleted) VALUES ($1, $2) WHERE todo_id = $3 RETURNING *;", [task, isCompleted, this.id]);
+                let isCompleted;
+                (todoData.isCompleted === true || todoData.isCompleted === false) ? isCompleted = todoData.isCompleted : isCompleted = this.isCompleted;
+                const newTodo = yield config_1.default.query("UPDATE todos  SET task = $1, iscompleted = $2 WHERE todo_id = $3 RETURNING *;", [task, isCompleted, this.id]);
                 const result = new Todo(newTodo.rows[0]);
-                resolve(result);
+                resolve({ data: result });
             }
             catch (err) {
                 // tslint:disable-next-line:no-console
                 console.log("query has been rejected");
-                reject(`Habit could not be created`);
+                reject(`Todo could not be updated`);
+            }
+        }));
+    }
+    get destroy() {
+        return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+            // tslint:disable-next-line:no-console
+            console.log("Attempting to query database to delete Todo...");
+            try {
+                const result = yield config_1.default.query("DELETE from todos WHERE todo_id = $1 RETURNING *;", [this.id]);
+                resolve({ data: result.rows[0] });
+            }
+            catch (err) {
+                // tslint:disable-next-line:no-console
+                console.log("query has been rejected");
+                reject("Todo could not be deleted");
             }
         }));
     }

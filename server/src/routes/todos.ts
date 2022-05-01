@@ -5,7 +5,7 @@ export const router: Router = express.Router()
 const todos: TodoInterface[] = []
 
 interface Payload {
-    data: TodoInterface[]
+    data: TodoInterface[] | TodoInterface
 }
 interface TodoInterface {
     id: number,
@@ -13,22 +13,64 @@ interface TodoInterface {
     isCompleted: boolean
 }
 
+interface TodoPayloadUpdate {
+    task?: string,
+    isCompleted?: boolean
+}
+
+// GET from db
+router.get('/db/get', async (req: Request, res: Response) => {
+    try {
+		const show: Payload = await Todo.everything;
+		res.status(200).json(show);
+	} catch (err) {
+		res.status(404).json({error: err.message});
+	}
+})
+
+// POST to db
+router.post('/db/post', async(req: Request, res:Response) => {
+    try {
+        const show: Payload = await Todo.create(req.body);
+		res.status(200).json(show);
+	} catch (err) {
+        res.status(404).json({error: err});
+	}
+})
+
+
+// UPDATE to db
+router.put('/db/update/:id', async(req: Request, res: Response) => {
+    try {
+        const todoId: number = Number(req.params.id)
+        const todo: Todo = await Todo.find(todoId)
+        const newTodoData: TodoPayloadUpdate = req.body
+        const show = await todo.update(newTodoData)
+        res.status(200).json(show);
+    } catch (err) {
+        res.status(404).json({error: err})
+    }
+})
+
+// DELETE from db
+router.delete("/db/delete/:id", async(req: Request, res: Response) => {
+    try {
+        const todoId: number = Number(req.params.id)
+        const todo: Todo = await Todo.find(todoId)
+        const show = await todo.destroy
+        res.status(200).json({ message: "Todo has been deleted!", ...show})
+    } catch (err) {
+        res.status(404).json({error: err})
+    }
+})
+
+
 // GET
 router.get('/get', (req: Request, res: Response) => {
     const payload: Payload = {
         data: todos
     }
     res.status(200).json(payload)
-})
-
-// GET from db
-router.get('/db/get', async (req: Request, res: Response) => {
-    try {
-		const show = await Todo.everything;
-		res.status(200).json(show);
-	} catch (err) {
-		res.status(404).json({error: err.message});
-	}
 })
 
 // POST
@@ -48,16 +90,6 @@ router.post('/post', (req: Request, res:Response) => {
     }
 })
 
-// POST to db
-router.post('/db/post', async(req: Request, res:Response) => {
-    try {
-        const show = await Todo.create(req.body);
-		res.status(200).json(show);
-	} catch (err) {
-        res.status(404).json({error: err});
-	}
-})
-
 // UPDATE
 router.put('/update/:id', (req: Request, res: Response) => {
     try {
@@ -73,15 +105,6 @@ router.put('/update/:id', (req: Request, res: Response) => {
         res.status(404).json({error: err.message})
     }
 } )
-
-// UPDATE to db
-router.put('/db/update/:id', (req: Request, res: Response) => {
-    try {
-        const todoId: number = Number(req.params.id)
-    } catch (err) {
-
-    }
-})
 
 // DELETE
 router.delete("/delete/:id", (req: Request, res: Response) => {
