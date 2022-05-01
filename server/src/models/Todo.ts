@@ -1,7 +1,11 @@
 import db from '../db_config/config'
 
-interface TodoInterface extends TodoPayload {
+interface TodoInterface {
+    readonly id: number,
+    task: string,
     isCompleted: boolean,
+    update(todoData: TodoPayloadUpdate): Promise<{ data: Todo }>,
+    destroy(): Promise<{ data: Todo }>
 }
 
 interface TodoPayload {
@@ -20,8 +24,8 @@ interface Data {
     iscompleted: boolean
 }
 
-export default class Todo implements TodoInterface {
-    id: number
+export default class Todo implements TodoInterface{
+    readonly id: number
     task: string
     isCompleted: boolean
 
@@ -31,7 +35,7 @@ export default class Todo implements TodoInterface {
         this.isCompleted = data.iscompleted;
     }
 
-    static get everything(): Promise<{ data: Todo[] }> {
+    static everything(): Promise<{ data: Todo[] }> {
 		return new Promise(async (resolve, reject) => {
 			// tslint:disable-next-line:no-console
             console.log("Attempting to query database for everything...")
@@ -68,7 +72,7 @@ export default class Todo implements TodoInterface {
 	}
 
     static find(id: number): Promise<Todo>{
-        return new Promise(async(resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
                     // tslint:disable-next-line:no-console
                     console.log("Attempting to query database to find Todo...")
                     try {
@@ -105,13 +109,14 @@ export default class Todo implements TodoInterface {
 		});
     }
 
-    get destroy(): Promise<{data: Todo}> {
-        return new Promise( async(resolve, reject) => {
+    destroy(): Promise<{data: Todo}> {
+        return new Promise(async (resolve, reject) => {
             // tslint:disable-next-line:no-console
             console.log("Attempting to query database to delete Todo...")
             try {
-                const result = await db.query("DELETE from todos WHERE todo_id = $1 RETURNING *;", [this.id])
-                resolve({data: result.rows[0]})
+                const deletedTodo = await db.query("DELETE from todos WHERE todo_id = $1 RETURNING *;", [this.id])
+                const result: Todo = new Todo(deletedTodo.rows[0]);
+                resolve({data: result})
             } catch (err) {
                 // tslint:disable-next-line:no-console
                 console.log("query has been rejected")
@@ -119,5 +124,4 @@ export default class Todo implements TodoInterface {
             }
         })
     }
-
 }

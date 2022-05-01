@@ -19,7 +19,7 @@ class Todo {
         this.task = data.task;
         this.isCompleted = data.iscompleted;
     }
-    static get everything() {
+    static everything() {
         return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
             // tslint:disable-next-line:no-console
             console.log("Attempting to query database for everything...");
@@ -87,13 +87,14 @@ class Todo {
             }
         }));
     }
-    get destroy() {
+    destroy() {
         return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
             // tslint:disable-next-line:no-console
             console.log("Attempting to query database to delete Todo...");
             try {
-                const result = yield config_1.default.query("DELETE from todos WHERE todo_id = $1 RETURNING *;", [this.id]);
-                resolve({ data: result.rows[0] });
+                const deletedTodo = yield config_1.default.query("DELETE from todos WHERE todo_id = $1 RETURNING *;", [this.id]);
+                const result = new Todo(deletedTodo.rows[0]);
+                resolve({ data: result });
             }
             catch (err) {
                 // tslint:disable-next-line:no-console
