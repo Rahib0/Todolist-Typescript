@@ -14,5 +14,5 @@ exports.router.post('/post', todo_1.createTodo);
 // UPDATE
 exports.router.put('/update/:id', todo_1.updateTodo);
 // DELETE
-exports.router.delete("/delete/:id", todo_1.deleteTodo);
+exports.router.delete('/delete/:id', todo_1.deleteTodo);
 //# sourceMappingURL=todos.js.map

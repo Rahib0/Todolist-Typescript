@@ -1,8 +1,8 @@
-import { server } from "./server"
+import { server } from './server'
 
-const port: string | number = process.env.PORT || 3000;
+const port: string | number = process.env.PORT || 3000
 
 server.listen(port, () =>
-    // tslint:disable-next-line:no-console
-    console.log(`\n Express departing now from http://localhost:${port} \n`)
-);
+// tslint:disable-next-line:no-console
+	console.log(`\n Express departing now from http://localhost:${port} \n`)
+)
